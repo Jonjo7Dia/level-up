@@ -1,3 +1,4 @@
+
 // Find out why our error database is filling with following error when using savePassword/Age in user-input module:
 // 'value' is not a string or number (VerySimpleDatabase.insert)
 // Also, double-check that the functions are otherwise correct.
@@ -7,6 +8,7 @@
 //Initial thoughts --> type issue being created 
 //could be trying submit a null or undefined value
 //parseINt could be trying to  submit a null or undefined value 
+
 
 interface VerySimpleDatabase {
   insert(key: string, value: string | number): void;

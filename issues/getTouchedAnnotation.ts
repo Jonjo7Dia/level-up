@@ -60,6 +60,9 @@ export default function getTouchedAnnotation(
       match = annot;
     }
   });
+<<<<<<< HEAD
 
+=======
+>>>>>>> f1c8be3... uesrInput test set up
   return match;
 }
