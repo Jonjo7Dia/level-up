@@ -17,9 +17,17 @@ import ServiceFactory from '../src/ServiceFactory';
 //Initial Thoughts 
 //doing more than it should -> i'm assuming states are being rerendered more than needed --> check dependency list
 //when userId changes the states don't get updated
+<<<<<<< HEAD
 //when the component that uses the hook gets unmounted the promise is trying to set a state thats is no longer there
 //
 >>>>>>> 9d85880... identified issues
+=======
+//when the component that uses the hook gets unmounted the promise is trying to set a state thats is no longer there --> need to research how to solve this
+
+//solution proposals: 
+//for error = "Can't perform a React state update on an unmounted component" we could cancel the promise whn the component is no longer there
+//we can do this by creating a custom hook that gives us a mounted not mounted state, if not mounted do follow through with promise
+>>>>>>> deda8e0... solution proposal/ideas
 type UserInfo = { userId: string; name: string };
 type MedicalRecord = { userId: string; isSick: boolean };
 type PatientInfo = UserInfo & MedicalRecord;
@@ -57,7 +65,10 @@ export default function usePatientInfo(
       action,
       userId
     );
-    userService.getUserInfo(userInfo.userId).then(setUserInfo);
+
+    useEffect(()=>{
+      userService.getUserInfo(userInfo.userId).then(setUserInfo);
+    }, [userId]); //should update userINfo State then other userEffects will render 
 
   useEffect(() => {
     logAccess('request-access', userInfo.userId);
