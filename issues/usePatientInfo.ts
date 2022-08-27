@@ -9,12 +9,16 @@
 
 // Because of the large number of issues, you should check the entire implementation of the hook.
 
+<<<<<<< HEAD
 import { useEffect, useState } from 'react';
 import ServiceFactory from '../src/ServiceFactory';
 <<<<<<< HEAD
 
 =======
 //Initial Thoughts 
+=======
+//Initial Thoughts
+>>>>>>> 0c9a836... custom hook to check if componenet is mounted
 //doing more than it should -> i'm assuming states are being rerendered more than needed --> check dependency list
 //when userId changes the states don't get updated
 <<<<<<< HEAD
@@ -24,10 +28,17 @@ import ServiceFactory from '../src/ServiceFactory';
 =======
 //when the component that uses the hook gets unmounted the promise is trying to set a state thats is no longer there --> need to research how to solve this
 
-//solution proposals: 
+//solution proposals:
 //for error = "Can't perform a React state update on an unmounted component" we could cancel the promise whn the component is no longer there
 //we can do this by creating a custom hook that gives us a mounted not mounted state, if not mounted do follow through with promise
+<<<<<<< HEAD
 >>>>>>> deda8e0... solution proposal/ideas
+=======
+
+import { useEffect, useState } from 'react';
+import ServiceFactory from '../src/ServiceFactory';
+import { useMountedState } from './hooks/useMounted';
+>>>>>>> 0c9a836... custom hook to check if componenet is mounted
 type UserInfo = { userId: string; name: string };
 type MedicalRecord = { userId: string; isSick: boolean };
 type PatientInfo = UserInfo & MedicalRecord;
@@ -53,6 +64,7 @@ interface LoggingService {
 export default function usePatientInfo(
   userId: string
 ): PatientInfo | undefined {
+  const isMounted = useMountedState();
   const userService = ServiceFactory.createService<UserService>('userService');
   const medicalRecordService =
     ServiceFactory.createService<MedicalRecordService>('medicalRecordService');
@@ -66,14 +78,19 @@ export default function usePatientInfo(
       userId
     );
 
-    useEffect(()=>{
-      userService.getUserInfo(userInfo.userId).then(setUserInfo);
-    }, [userId]); //should update userINfo State then other userEffects will render 
+  useEffect(() => {
+    userService.getUserInfo(userInfo.userId).then(() => {
+      if (isMounted()) {
+        setUserInfo;
+      }
+    });
+  }, [userId]); //should update userINfo State then other userEffects will render
 
   useEffect(() => {
     logAccess('request-access', userInfo.userId);
     medicalRecordService
       .getMedicalRecord(userInfo.userId)
+<<<<<<< HEAD
       .then(setMedicalRecord);
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -84,6 +101,14 @@ export default function usePatientInfo(
 >>>>>>> 9d85880... identified issues
 =======
       //this is the promise 
+=======
+      .then(()=>{
+        if (isMounted()){
+          setMedicalRecord
+        }
+      }
+        );
+>>>>>>> 0c9a836... custom hook to check if componenet is mounted
   }, [userService, userInfo]); //the useEffect should rerender when userInfo gets updated but the useEffect itself is updating userInfo so it will be called repeatedly
 >>>>>>> 9d85880... identified issues
 
@@ -95,3 +120,6 @@ export default function usePatientInfo(
 
   return medicalRecord ? { ...userInfo, ...medicalRecord } : undefined;
 }
+
+//for this bug I had to do a lot of research I haven't practiced/experience promies within useeffects before 
+
