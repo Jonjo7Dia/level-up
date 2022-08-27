@@ -65,7 +65,12 @@ export default function usePatientInfo(
       .getMedicalRecord(userInfo.userId)
       .then(setMedicalRecord);
 <<<<<<< HEAD
+<<<<<<< HEAD
   }, [userService, userInfo]);
+=======
+      //this is the promise 
+  }, [userService, userInfo]); //the useEffect should rerender when userInfo gets updated but the useEffect itself is updating userInfo so it will be called repeatedly
+>>>>>>> 9d85880... identified issues
 =======
       //this is the promise 
   }, [userService, userInfo]); //the useEffect should rerender when userInfo gets updated but the useEffect itself is updating userInfo so it will be called repeatedly
