@@ -9,8 +9,8 @@
 //could be trying submit a null or undefined value
 //parseINt could be trying to  submit a null or undefined value 
 
+export interface VerySimpleDatabase {
 
-interface VerySimpleDatabase {
   insert(key: string, value: string | number): void;
 }
 
