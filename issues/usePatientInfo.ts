@@ -19,9 +19,7 @@
 //when userId changes the states don't get updated
 
 //when the component that uses the hook gets unmounted the promise is trying to set a state thats is no longer there
-//
-
-//when the component that uses the hook gets unmounted the promise is trying to set a state thats is no longer there --> need to research how to solve this
+/
 
 //solution proposals:
 //for error = "Can't perform a React state update on an unmounted component" we could cancel the promise whn the component is no longer there
@@ -54,10 +52,9 @@ interface LoggingService {
  * This hook also logs access to patient's medical
  * record info.
  */
-export default function usePatientInfo(
+ export default function usePatientInfo(
   userId: string
 ): PatientInfo | undefined {
-  const isMounted = useMountedState();
   const userService = ServiceFactory.createService<UserService>('userService');
   const medicalRecordService =
     ServiceFactory.createService<MedicalRecordService>('medicalRecordService');
@@ -72,44 +69,23 @@ export default function usePatientInfo(
     );
 
   useEffect(() => {
-    userService.getUserInfo(userInfo.userId).then(() => {
-      if (isMounted()) {
-        setUserInfo;
-      }
-    });
-  }, [userId]); //should update userINfo State then other userEffects will render
+    let isMounted = true;
+    if(isMounted){
+      userService.getUserInfo(userInfo.userId).then(setUserInfo);
 
-  useEffect(() => {
-    logAccess('request-access', userInfo.userId);
-    medicalRecordService
-      .getMedicalRecord(userInfo.userId)
-<<<<<<< HEAD
-      .then(setMedicalRecord);
-<<<<<<< HEAD
-<<<<<<< HEAD
+      logAccess('request-access', userInfo.userId);
+      medicalRecordService
+        .getMedicalRecord(userInfo.userId)
+        .then(setMedicalRecord);
+    }
+    return () => {isMounted = false};
   }, [userService, userInfo]);
-=======
-      //this is the promise 
-  }, [userService, userInfo]); //the useEffect should rerender when userInfo gets updated but the useEffect itself is updating userInfo so it will be called repeatedly
->>>>>>> 9d85880... identified issues
-=======
-      //this is the promise 
-=======
-      .then(()=>{
-        if (isMounted()){
-          setMedicalRecord
-        }
-      }
-        );
->>>>>>> 0c9a836... custom hook to check if componenet is mounted
-  }, [userService, userInfo]); //the useEffect should rerender when userInfo gets updated but the useEffect itself is updating userInfo so it will be called repeatedly
->>>>>>> 9d85880... identified issues
 
   useEffect(() => {
     if (medicalRecord) {
       logAccess('obtain-access', userInfo.userId);
     }
-  }, [medicalRecord, userInfo]);
+  }, [medicalRecord, userInfo, logAccess]);
 
   return medicalRecord ? { ...userInfo, ...medicalRecord } : undefined;
 }
