@@ -28,7 +28,7 @@
 
 import { useEffect, useState } from 'react';
 import ServiceFactory from '../src/ServiceFactory';
-import { useMountedState } from './hooks/useMounted';
+
 
 type UserInfo = { userId: string; name: string };
 type MedicalRecord = { userId: string; isSick: boolean };
@@ -79,13 +79,13 @@ interface LoggingService {
         .then(setMedicalRecord);
     }
     return () => {isMounted = false};
-  }, [userService, userInfo]);
+  }, [userId]);
 
   useEffect(() => {
     if (medicalRecord) {
       logAccess('obtain-access', userInfo.userId);
     }
-  }, [medicalRecord, userInfo, logAccess]);
+  }, [medicalRecord, userInfo]);
 
   return medicalRecord ? { ...userInfo, ...medicalRecord } : undefined;
 }
