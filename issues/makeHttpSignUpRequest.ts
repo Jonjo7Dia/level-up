@@ -35,7 +35,7 @@ export function makeHttpSignUpRequest(
 
   return `POST /1/sign-up HTTP/1.1
     Host: api.myapp
-    Authentication: Basic ${bearerToken}
+    Authentication: Bearer ${bearerToken}
     Content-Type: ${contentType === 'form' ? `application/x-www-form-urlencoded` : `application/json`}
     Content-Length: ${body.length}
     ${body}`;
