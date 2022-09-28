@@ -26,7 +26,7 @@ export function makeHttpSignUpRequest(
   let body = '';
 
   if (contentType === 'form') {
-    body = `name=${convertToURI(accountName)}&userEmail=${email}`;
+    body = `name=${convertToURI(accountName)}&userEmail=${convertToURI(email)}`;
   } else {
     body = JSON.stringify({ name: accountName, userEmail: email });
   }
