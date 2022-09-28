@@ -60,6 +60,5 @@ export default function getTouchedAnnotation(
       match = annot;
     }
   });
-
   return match;
 }

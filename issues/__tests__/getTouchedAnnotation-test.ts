@@ -23,8 +23,8 @@ describe('getTouchedAnnotation', () => {
       },
     ];
 
-    expect(getTouchedAnnotation({ x: 50, y: 59 }, annotations)).toBe(
-      annotations[1]
-    );
+
+    expect(getTouchedAnnotation({ x: 50, y: 59 }, annotations)).toBe(annotations[1])
+
   });
 });
