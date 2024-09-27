@@ -1,5 +1,34 @@
+// Issues:
+// There appears to be number of issues with usePatientInfo hook:
+
+// 1. The hook is causing performance issues. It is a simple hook but somehow seems to be doing much more than it should.
+
+//2.  The hook doesn't seem to react properly on changes to input param.
+
+// 3. We're seeing errors like "Can't perform a React state update on an unmounted component" that somehow seem to be related to this component.
+
+// Because of the large number of issues, you should check the entire implementation of the hook.
+
+
+
+//Initial Thoughts 
+
+//Initial Thoughts
+
+//doing more than it should -> i'm assuming states are being rerendered more than needed --> check dependency list
+//when userId changes the states don't get updated
+
+//when the component that uses the hook gets unmounted the promise is trying to set a state thats is no longer there
+/
+
+//solution proposals:
+//for error = "Can't perform a React state update on an unmounted component" we could cancel the promise whn the component is no longer there
+//we can do this by creating a custom hook that gives us a mounted not mounted state, if not mounted do follow through with promise
+
+
 import { useEffect, useState } from 'react';
 import ServiceFactory from '../src/ServiceFactory';
+
 
 type UserInfo = { userId: string; name: string };
 type MedicalRecord = { userId: string; isSick: boolean };
@@ -23,7 +52,7 @@ interface LoggingService {
  * This hook also logs access to patient's medical
  * record info.
  */
-export default function usePatientInfo(
+ export default function usePatientInfo(
   userId: string
 ): PatientInfo | undefined {
   const userService = ServiceFactory.createService<UserService>('userService');
@@ -40,13 +69,17 @@ export default function usePatientInfo(
     );
 
   useEffect(() => {
-    userService.getUserInfo(userInfo.userId).then(setUserInfo);
+    let isMounted = true;
+    if(isMounted){
+      userService.getUserInfo(userInfo.userId).then(setUserInfo);
 
-    logAccess('request-access', userInfo.userId);
-    medicalRecordService
-      .getMedicalRecord(userInfo.userId)
-      .then(setMedicalRecord);
-  }, [userService, userInfo]);
+      logAccess('request-access', userInfo.userId);
+      medicalRecordService
+        .getMedicalRecord(userInfo.userId)
+        .then(setMedicalRecord);
+    }
+    return () => {isMounted = false};
+  }, [userId]);
 
   useEffect(() => {
     if (medicalRecord) {
@@ -56,3 +89,6 @@ export default function usePatientInfo(
 
   return medicalRecord ? { ...userInfo, ...medicalRecord } : undefined;
 }
+
+//for this bug I had to do a lot of research I haven't practiced/experience promies within useeffects before 
+
